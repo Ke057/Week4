@@ -32,4 +32,19 @@ The K-Means model is initialized using KMeans from sklearn.cluster. It partition
 3.  **Gaussian Mixture Model (GMM)**:
 The GMM is initialized using GaussianMixture from sklearn.mixture. Unlike K-Means, GMM is a distribution-based model that assumes all data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. The model is fit (gmm.fit) to the cleaned data matrix, and cluster labels are predicted (gmm.predict) based on the underlying probability density.
 ##Result
+The resulting clusters of functions can then be extracted and plotted using plt from matplotlib.pyplot. The echos (or functions) in the sea ice cluster are been labelled '0' and the lead echos are labelled '1'.
+## Result
+### 1. Waveform Classification
+The unsupervised models categorized the waveforms into two distinct groups. To validate these results, the mean and standard deviation of the echoes for each class were plotted:
+* **Lead Cluster (Specular Echoes)**:
+Characterized by a very high, narrow peak with high power (reaching ~300,000 units). These represent calm, highly reflective open water between ice floes.
+* **Sea Ice Cluster (Diffuse Echoes)**:
+Characterized by much lower peak power (below 7,000 units) and a wider, more complex return signal. This scattering is typical of rougher, snow-covered sea ice.
+### 2. Waveform Alignment and Distribution
 
+To further analyze the consistency of the classification, we performed **Waveform Alignment** using cross-correlation to center the peaks of all echoes within each cluster.
+
+* **Combined Aligned Echoes**: The alignment process reveals a sharp, consolidated peak for the entire dataset. This confirms that the dominant return signal is consistently captured across observations once the timing offsets are removed.
+* **Cluster Consistency**:
+    * **Lead Cluster**: Shows highly uniform, near-identical specular peaks when aligned. This uniformity indicates a very stable and flat reflecting surface (open water).
+    * **Sea Ice Cluster**: Exhibits significant variability even after alignment. The "noisy" tails and varying widths reflect the diverse topography, snow cover, and surface roughness of sea ice.
