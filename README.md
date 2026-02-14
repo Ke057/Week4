@@ -16,30 +16,20 @@ drive.mount('/content/drive')
 ```
 # unsupervised learning
 ## K-means Clustering
-The unsupervised learning method used in this project is K-means clustering. K-means is a distance-based algorithm that divides data into a chosen number of clusters. It groups data so that points in the same cluster are more similar to each other. Similarity is usually measured using Euclidean distance. Because it does not need labelled data, it is suitable for exploratory analysis. K-means assumes the data can be represented by k cluster centres (centroids). The algorithm starts with k initial centroids. It then repeats two steps: assign points to the nearest centroid, and update each centroid as the cluster mean. The process stops when the centroids change very little. Key elements include k, centroid initialization, distance metric, and iterative updating. K-means is fast, simple, and widely used for multidimensional data clustering.
-```bash
-# Python code for K-means clustering
-from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
-import numpy as np
+The unsupervised learning method used in this project is K-means clustering. K-means is a distance-based algorithm that divides data into a chosen number of clusters. It groups data so that points in the same cluster are more similar to each other. Similarity is usually measured using Euclidean distance. Because it does not need labelled data, it is suitable for exploratory analysis. K-means assumes the data can be represented by k cluster centres (centroids). The algorithm starts with k initial centroids.
 
-# Sample data
-X = np.random.rand(100, 2)
-
-# K-means model
-kmeans = KMeans(n_clusters=4)
-kmeans.fit(X)
-y_kmeans = kmeans.predict(X)
-
-# Plotting
-plt.scatter(X[:, 0], X[:, 1], c=y_kmeans, cmap='viridis')
-centers = kmeans.cluster_centers_
-plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
-plt.show()
-```
-<img width="548" height="413" alt="image" src="https://github.com/user-attachments/assets/83c3022f-061b-4e6c-bbb5-9fa3d9919be0" />
-
+It then repeats two steps: assign points to the nearest centroid, and update each centroid as the cluster mean. The process stops when the centroids change very little. Key elements include k, centroid initialization, distance metric, and iterative updating. K-means is fast, simple, and widely used for multidimensional data clustering.
 ## GMM Clustering
-The unsupervised learning method used in this project is Gaussian Mixture Models (GMMs). GMMs are probabilistic models used to describe a dataset as a combination of several normally distributed subpopulations rather than a single distribution. The method assumes that the observed data are generated from multiple Gaussian distributions, each with its own mean and variance. By combining several simple Gaussian components, GMMs can model more complex data structures, which makes them useful for clustering and density estimation. 
+Gaussian Mixture Models (GMMs) are an unsupervised learning method used to find hidden groups in data. Instead of assuming all data come from one distribution, GMM assumes the data come from several Gaussian (normal) distributions mixed together. Each group has its own mean and variance. By combining these Gaussian components, GMM can describe complex data patterns and is useful for clustering and density estimation.
 
-The key components of a GMM include the number of Gaussian components, the Expectation–Maximization (EM) algorithm, and the covariance type. The EM algorithm is an iterative procedure that first estimates the probability that each data point belongs to each component, and then updates the component parameters to maximize the likelihood of the observed data. The covariance type controls the shape and flexibility of each cluster. Compared with hard clustering methods, GMM provides soft probabilistic assignments and can better handle clusters with different shapes and spreads. Other unsupervised learning methods include K-means clustering and hierarchical clustering.
+A GMM mainly includes three parts: the number of Gaussian components, the EM algorithm, and the covariance type. The EM algorithm works in steps: first it estimates how likely each data point belongs to each group, then it updates the group parameters to better fit the data. The covariance type controls the shape and size of each cluster. Unlike hard clustering methods, GMM gives soft probabilities instead of fixed labels, so it can handle clusters with different shapes and spreads. Other common unsupervised methods include K-means and hierarchical clustering.
+## Reading in the Necessary Functions
+In order to ensure that data is compatible with the chosen analytical model, the data needs to be preprocessed. This includes transforming raw data into variables such as peakiness and stack standard deviation, as well as removing NaN values.
+## Running the Clustering Models
+1.  **K-Means Clustering**:
+The K-Means model is initialized using KMeans from sklearn.cluster. It partitions the data by minimizing the variance within each cluster. By defining the number of clusters (n_clusters) and setting a random_state for reproducibility, the model is fit to the data, and cluster labels are predicted to distinguish between sea ice and leads.
+
+3.  **Gaussian Mixture Model (GMM)**:
+The GMM is initialized using GaussianMixture from sklearn.mixture. Unlike K-Means, GMM is a distribution-based model that assumes all data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. The model is fit (gmm.fit) to the cleaned data matrix, and cluster labels are predicted (gmm.predict) based on the underlying probability density.
+##Result
+
