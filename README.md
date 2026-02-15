@@ -1,4 +1,4 @@
-# Week4
+# GEOL0069_Week4
 ## Getting started
 This project focuses on the application of unsupervised learning techniques to classify Sentinel-3 altimetry echoes in the Arctic region. The primary objective is to differentiate between Sea Ice and Leads (narrow channels of open water) based on their unique radar backscatter signatures. We will cover K-means and Gaussian Mixture Models (GMM) clustering.
 ## Prerequisites
@@ -14,15 +14,43 @@ pip install netCDF4
 from google.colab import drive
 drive.mount('/content/drive')
 ```
-# unsupervised learning
+## Context
+Satellite remote sensing provides multiple ways to distinguish between surface types such as sea ice and open water. Optical multispectral imagery captures differences in reflectance across bands, while radar altimetry measures the returned echo waveform from the surface.
+In this project, multispectral raster bands and waveform-derived features are processed and clustered using unsupervised learning to explore how well surface classes can be separated automatically.
+
+## unsupervised learning
 ## K-means Clustering
-The unsupervised learning method used in this project is K-means clustering. K-means is a distance-based algorithm that divides data into a chosen number of clusters. It groups data so that points in the same cluster are more similar to each other. Similarity is usually measured using Euclidean distance. Because it does not need labelled data, it is suitable for exploratory analysis. K-means assumes the data can be represented by k cluster centres (centroids). The algorithm starts with k initial centroids.
+K-Means is a distance-based clustering method that groups data into k clusters by minimising the variation within each cluster. It works by iteratively assigning each sample to the nearest cluster centre and then updating the centres based on the mean of assigned points.
 
-It then repeats two steps: assign points to the nearest centroid, and update each centroid as the cluster mean. The process stops when the centroids change very little. Key elements include k, centroid initialization, distance metric, and iterative updating. K-means is fast, simple, and widely used for multidimensional data clustering.
+In this project, K-Means is used to cluster multispectral pixel features and synthetic datasets to explore how different surface types separate in feature space.
+
+**Advantages**
+- Fast and simple  
+- Easy to interpret  
+- Works well for compact clusters
+
+**Limitations**
+- Must choose the number of clusters in advance  
+- Assumes roughly spherical cluster shapes  
+- Sensitive to initial centroid placement  
+
 ## GMM Clustering
-Gaussian Mixture Models (GMMs) are an unsupervised learning method used to find hidden groups in data. Instead of assuming all data come from one distribution, GMM assumes the data come from several Gaussian (normal) distributions mixed together. Each group has its own mean and variance. By combining these Gaussian components, GMM can describe complex data patterns and is useful for clustering and density estimation.
+Gaussian Mixture Models are probabilistic clustering models that represent the data as a mixture of Gaussian distributions. Instead of assigning points strictly to one cluster, GMM estimates the probability of membership for each component.
 
-A GMM mainly includes three parts: the number of Gaussian components, the EM algorithm, and the covariance type. The EM algorithm works in steps: first it estimates how likely each data point belongs to each group, then it updates the group parameters to better fit the data. The covariance type controls the shape and size of each cluster. Unlike hard clustering methods, GMM gives soft probabilities instead of fixed labels, so it can handle clusters with different shapes and spreads. Other common unsupervised methods include K-means and hierarchical clustering.
+Model parameters are estimated using the Expectation–Maximization (EM) algorithm. GMM is more flexible than K-Means and can model clusters with different shapes and spreads.
+
+In this project, GMM is applied to waveform and feature datasets to separate likely surface types such as sea ice and leads.
+
+**Advantages**
+- Handles overlapping clusters
+- Allows different cluster shapes
+- Provides probabilistic membership
+
+**Limitations**
+- Slower than K-Means
+- Requires choosing number of components
+- Can overfit if too many components are used
+
 ## Reading in the Necessary Functions
 In order to ensure that data is compatible with the chosen analytical model, the data needs to be preprocessed. This includes transforming raw data into variables such as peakiness and stack standard deviation, as well as removing NaN values.
 ## Running the Clustering Models
@@ -34,17 +62,45 @@ The GMM is initialized using GaussianMixture from sklearn.mixture. Unlike K-Mean
 ##Result
 The resulting clusters of functions can then be extracted and plotted using plt from matplotlib.pyplot. The echos (or functions) in the sea ice cluster are been labelled '0' and the lead echos are labelled '1'.
 ## Result
-### 1. Waveform Classification
-The unsupervised models categorized the waveforms into two distinct groups. To validate these results, the mean and standard deviation of the echoes for each class were plotted:
-* **Lead Cluster (Specular Echoes)**:
-Characterized by a very high, narrow peak with high power (reaching ~300,000 units). These represent calm, highly reflective open water between ice floes.
-* **Sea Ice Cluster (Diffuse Echoes)**:
-Characterized by much lower peak power (below 7,000 units) and a wider, more complex return signal. This scattering is typical of rougher, snow-covered sea ice.
-### 2. Waveform Alignment and Distribution
+The clustering models (K-Means and Gaussian Mixture Models) were applied to the waveform / echo feature dataset after preprocessing and cleaning. Results were evaluated using waveform plots, cluster statistics, and confusion matrix comparison against the reference surface-type flags.
+### Waveform (Echo) Shape Comparison
 
-To further analyze the consistency of the classification, we performed **Waveform Alignment** using cross-correlation to center the peaks of all echoes within each cluster.
+Echo waveforms from different clusters show clear structural differences. One cluster is characterised by sharper peak-like returns, while the other shows broader and more gradually decaying signals. This is consistent with the expected physical difference between lead-like and sea-ice-like surfaces.
 
-* **Combined Aligned Echoes**: The alignment process reveals a sharp, consolidated peak for the entire dataset. This confirms that the dominant return signal is consistently captured across observations once the timing offsets are removed.
-* **Cluster Consistency**:
-    * **Lead Cluster**: Shows highly uniform, near-identical specular peaks when aligned. This uniformity indicates a very stable and flat reflecting surface (open water).
-    * **Sea Ice Cluster**: Exhibits significant variability even after alignment. The "noisy" tails and varying widths reflect the diverse topography, snow cover, and surface roughness of sea ice.
+Example waveform plots were produced for:
+
+- K-Means clusters  
+- GMM clusters  
+- raw (unaligned) echoes  
+- aligned echoes  
+
+This gives four comparison conditions:
+- K-Means — raw echoes  
+- K-Means — aligned echoes  
+- GMM — raw echoes  
+- GMM — aligned echoes
+
+### Mean and Standard Deviation Curves
+Observations:
+
+- Cluster mean curves show different peak strength and decay behaviour  
+- Lead-like clusters generally have higher and sharper mean peaks  
+- Sea-ice-like clusters show smoother and lower average return power  
+- Standard deviation curves indicate higher variability in the lead cluster  
+- After echo alignment, both mean and standard deviation curves become smoother and more physically interpretable  
+
+Aligned results reduce waveform shift effects and improve cluster separability in the statistics.
+
+### Confusion Matrix Comparison
+A confusion matrix was computed by comparing the clustering labels with the reference classification flags provided in the dataset.
+Below is a confusion matrix comparing the ESA official classification (flags) against k-means and GMM cluster classification：
+
+### Model Comparison Summary
+
+Based on the waveform plots, cluster mean and standard deviation curves, and the confusion matrix results for the unaligned echoes, **Gaussian Mixture Models (GMM)** generally perform better than **K-Means** for this dataset.
+
+GMM produces clusters with more realistic waveform shape separation and smoother statistical profiles. The cluster mean and standard deviation curves are more clearly differentiated, and the confusion matrix shows stronger agreement with the reference surface-type flags. This suggests that GMM handles overlapping and variable echo shapes more effectively.
+
+K-Means still provides reasonable separation and captures the main structure of the data, but its distance-based and hard-boundary clustering leads to more mixed assignments near class transitions.
+
+Overall, for echo-based surface classification in this experiment, **GMM is the more suitable model**, while K-Means serves as a useful and fast baseline method.
