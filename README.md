@@ -101,6 +101,7 @@ Aligned results reduce waveform shift effects and improve cluster separability i
 ### Confusion Matrix Comparison
 A confusion matrix was computed by comparing the clustering labels with the reference classification flags provided in the dataset.
 Below is a confusion matrix comparing the ESA official classification (flags) against k-means and GMM cluster classification：
+
 <img width="662" height="574" alt="image" src="https://github.com/user-attachments/assets/0cae88c8-f85d-4ebc-ace6-fb86fc1e9b43" />
 <img width="662" height="574" alt="image" src="https://github.com/user-attachments/assets/abd38812-f278-4411-857c-e3def129cece" />
 
